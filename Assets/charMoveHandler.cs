@@ -7,89 +7,159 @@ public class charMoveHandler : MonoBehaviour
     [SerializeField] GameObject[] HoleList;
     [SerializeField] Sprite aboveGroundSpr;
     [SerializeField] Sprite belowGroundSpr;
+    ParticleSystem partSys;
     GameObject Closest;
+
     Vector3 positionSet;
-    int[,] moveGrid;
-    Dictionary<GameObject, int>[] dictArr;
+    Vector2 particleDirection;
+
+    public string switchState;
     bool underground = false;
+    public bool isAbove;
+
+    float stunTimer;
     // Start is called before the first frame update
     void Start()
     {
+        stunTimer = 0f;
+        switchState = "aboveground";
+        partSys = GetComponent<ParticleSystem>();
         //boardWidth = HoleList.Length / 2;
         //HoleList = new GameObject[2,2];
         positionSet.z = -3.7f;
-        moveGrid = new int[3, 3];
-        for (int i = 0; i < moveGrid.Length; i++)
-        {
-            Debug.Log(i);
-        }
+        particleDirection.x = 0;
+        particleDirection.y = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (underground)
+
+        switch (switchState)
         {
-            if (Input.GetKey(KeyCode.UpArrow))
-            {
-                positionSet.y += 3 * Time.deltaTime;
-            }
-            if (Input.GetKey(KeyCode.DownArrow))
-            {
-                positionSet.y -= 3 * Time.deltaTime;
-            }
-            if (Input.GetKey(KeyCode.LeftArrow))
-            {
-                positionSet.x -= 3 * Time.deltaTime;
-            }
-            if (Input.GetKey(KeyCode.RightArrow))
-            {
-                positionSet.x += 3 * Time.deltaTime;
-            }
-            Color tmp = Color.white;
-            tmp.a = 1f;
-            GetComponent<SpriteRenderer>().color = tmp;
+            case "underground":
+                if (Input.GetKey(KeyCode.UpArrow))
+                {
+                    positionSet.y += 3 * Time.deltaTime;
+                    particleDirection.y = 1;
+
+                }
+                if (Input.GetKey(KeyCode.DownArrow))
+                {
+                    positionSet.y -= 3 * Time.deltaTime;
+                    particleDirection.y = -1;
+                }
+                if (Input.GetKey(KeyCode.LeftArrow))
+                {
+                    positionSet.x -= 3 * Time.deltaTime;
+                    particleDirection.x = -1;
+                }
+                if (Input.GetKey(KeyCode.RightArrow))
+                {
+                    positionSet.x += 3 * Time.deltaTime;
+                    particleDirection.x = 1;
+                }
+
+                if (Input.GetKeyUp(KeyCode.UpArrow) || Input.GetKeyUp(KeyCode.DownArrow))
+                {
+                    particleDirection.y = 0;
+                }
+                if (Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.RightArrow))
+                {
+                    particleDirection.x = 0;
+                }
+
+                Color tmp = Color.white;
+                tmp.a = 1f;
+                GetComponent<SpriteRenderer>().color = tmp;
+
+                if (Input.GetKeyUp(KeyCode.Space))
+                {
+                    
+                    
+                    //get initial
+                    for (int i = 0; i < HoleList.Length; i++)
+                    {
+                        if(HoleList[i].GetComponent<holeStateScript>().stateIter != 2)
+                        {
+                            Closest = HoleList[i];
+                            break;
+                        }
+                    }
+
+                        //assign closest
+                    for (int i = 0; i < HoleList.Length; i++)
+                    {
+
+                        if (GetDistance(HoleList[i]) < GetDistance(Closest) && HoleList[i].GetComponent<holeStateScript>().stateIter != 2)
+                        {
+                            Closest = HoleList[i];
+                        }
+                    }
+                    //positionSet = Closest.transform.position;
+                    //GetComponent<SpriteRenderer>().sprite = aboveGroundSpr;
+                }
+                if (Closest)
+                {
+                    Closest.GetComponent<holeStateScript>().occupied = true;
+                    if (GetDistance(Closest) > .3f)
+                    {
+                        positionSet = Vector3.Lerp(positionSet, Closest.transform.position, 55f * Time.deltaTime);
+                    }
+                    else
+                    {
+                        positionSet = Closest.transform.position;
+                        GetComponent<SpriteRenderer>().sprite = aboveGroundSpr;
+                        underground = false;
+                        switchState = "aboveground";
+                        Closest.GetComponent<holeStateScript>().stateIter -= 1;
+                    }
+                }
+                break;
+
+            case "aboveground":
+
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    underground = true;
+                    switchState = "underground";
+                    GetComponent<SpriteRenderer>().sprite = belowGroundSpr;
+                    Closest.GetComponent<holeStateScript>().occupied = false;
+                    Closest = null;
+                }
+                break;
+
+            case "stunned":
+                GetComponent<SpriteRenderer>().color = Color.red;
+                stunTimer += Time.deltaTime;
+                if(stunTimer > 2f)
+                {
+                    switchState = "aboveground";
+                    GetComponent<SpriteRenderer>().color = Color.white;
+                    stunTimer = 0;
+                }
+                break;
+        }
+
+        if(GetComponent<SpriteRenderer>().sprite == aboveGroundSpr)
+        {
+            isAbove = true;
         }
         else
         {
-            if (Closest)
-            {
-                if (GetDistance(Closest) > .3f)
-                {
-                    positionSet = Vector3.Lerp(positionSet, Closest.transform.position, 55f * Time.deltaTime);
-                }
-                else
-                {
-                    positionSet = Closest.transform.position;
-                    GetComponent<SpriteRenderer>().sprite = aboveGroundSpr;
-                }
-            }
-            
+            isAbove = false;
         }
         
-        //go below ground and start moving by pressing space
-        if (Input.GetKeyDown(KeyCode.Space))
+        /*if(particleDirection.x == 1)
         {
-            underground = true;
-            GetComponent<SpriteRenderer>().sprite = belowGroundSpr;
+            partSys.startRotation = Quaternion.Angle(Quaternion.Euler(particleDirection), Quaternion.Euler(-Vector2.up));
         }
-        
-        //Go above ground by releasing space
-        if(Input.GetKeyUp(KeyCode.Space))
+        else
         {
-            underground = false;
-            Closest = HoleList[0];
-            for(int i = 0; i < HoleList.Length; i++)
-            {
+            partSys.startRotation = Quaternion.Angle(Quaternion.Euler(particleDirection), Quaternion.Euler(Vector2.up));
+        }
+        */
 
-                if(GetDistance(HoleList[i]) < GetDistance(Closest))
-                {
-                    Closest = HoleList[i];
-                }
-            }
-            //positionSet = Closest.transform.position;
-            //GetComponent<SpriteRenderer>().sprite = aboveGroundSpr;
-        }
         positionSet.z = -3.7f;
         transform.position = positionSet;
     }
@@ -97,5 +167,13 @@ public class charMoveHandler : MonoBehaviour
     float GetDistance(GameObject other)
     {
         return Vector2.Distance(transform.position, other.transform.position);
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Enemy" && switchState == "aboveground")
+        {
+            switchState = "stunned";
+        }
     }
 }

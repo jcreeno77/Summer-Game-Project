@@ -2,10 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class enemyAI : MonoBehaviour
+public class enemyTargetAI : MonoBehaviour
 {
     [SerializeField] GameObject player;
-    [SerializeField] GameObject[] holeList;
     [SerializeField] Sprite[] shadowSequence;
     [SerializeField] Sprite[] smashSequence;
     Vector3 posi;
@@ -25,16 +24,15 @@ public class enemyAI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        //checking if player goes above ground
         if (!inSequence)
         {
             boxCollider.enabled = false;
             pauseTimer += Time.deltaTime;
-            if (pauseTimer > 1f)
+            if (player.GetComponent<charMoveHandler>().isAbove && pauseTimer > 2f)
             {
-                int randRange = Random.Range(0, holeList.Length);
-                posi = holeList[randRange].transform.position;
-                posi.z -= .1f;
+                posi = player.transform.position;
+                posi.z -= .3f;
                 inSequence = true;
                 shadowIter = 0;
                 smashIter = 0;
@@ -45,16 +43,16 @@ public class enemyAI : MonoBehaviour
 
         if (inSequence)
         {
-            if (shadowIter < shadowSequence.Length - 1)
+            if(shadowIter < shadowSequence.Length-1)
             {
-                shadowIter += Time.deltaTime * 24;
+                shadowIter += Time.deltaTime*24;
                 GetComponent<SpriteRenderer>().sprite = shadowSequence[(int)shadowIter];
             }
             else
             {
-                if (smashIter < smashSequence.Length - 1)
+                if(smashIter < smashSequence.Length-1)
                 {
-                    if (smashIter > 2f && smashIter < 9f)
+                    if(smashIter > 2f && smashIter < 9f)
                     {
                         boxCollider.enabled = true;
                     }
@@ -62,7 +60,7 @@ public class enemyAI : MonoBehaviour
                     {
                         boxCollider.enabled = false;
                     }
-                    smashIter += Time.deltaTime * 24;
+                    smashIter += Time.deltaTime*24;
                     GetComponent<SpriteRenderer>().sprite = smashSequence[(int)smashIter];
                 }
                 else
@@ -73,10 +71,5 @@ public class enemyAI : MonoBehaviour
         }
 
         transform.position = posi;
-        //transform.position = Vector3.Lerp(transform.position, new Vector3(xVal, yVal, -3.7f), Time.deltaTime);
-
-        //target hole
-
-        //target player
     }
 }
