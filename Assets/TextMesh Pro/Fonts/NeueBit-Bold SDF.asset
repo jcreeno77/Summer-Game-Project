@@ -73,9 +73,9 @@ Material:
     - _OutlineWidth: 0
     - _PerspectiveFilter: 0.875
     - _Reflectivity: 10
-    - _ScaleRatioA: 1
-    - _ScaleRatioB: 1
-    - _ScaleRatioC: 1
+    - _ScaleRatioA: 0.9
+    - _ScaleRatioB: 0.73125
+    - _ScaleRatioC: 0.73125
     - _ScaleX: 1
     - _ScaleY: 1
     - _ShaderFlags: 0
@@ -120,9 +120,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
   m_Name: NeueBit-Bold SDF
   m_EditorClassIdentifier: 
-  hashCode: 0
+  hashCode: -1341257987
   material: {fileID: -3320795473979503905}
-  materialHashCode: 0
+  materialHashCode: -1779589827
   m_Version: 1.1.0
   m_SourceFontFileGUID: 58a38ac7ccdfb47eebed5ac68f77617d
   m_SourceFontFile_EditorRef: {fileID: 12800000, guid: 58a38ac7ccdfb47eebed5ac68f77617d, type: 3}
@@ -5504,7 +5504,7 @@ Texture2D:
   m_TextureDimension: 2
   m_TextureSettings:
     serializedVersion: 2
-    m_FilterMode: 1
+    m_FilterMode: 0
     m_Aniso: 1
     m_MipBias: 0
     m_WrapU: 0
