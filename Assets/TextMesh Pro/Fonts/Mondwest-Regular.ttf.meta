@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 06e8456a7d9874868a41e1a916b555b8
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Mondwest
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 13f5b9bf8de494ecfb0336f83d393c28, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
