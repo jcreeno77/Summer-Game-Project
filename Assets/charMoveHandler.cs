@@ -1,20 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class charMoveHandler : MonoBehaviour
 {
     [SerializeField] GameObject[] HoleList;
     [SerializeField] GameObject Enemy1;
     [SerializeField] GameObject Enemy2;
+    [SerializeField] GameObject ScoreDisplayObj;
+    [SerializeField] GameObject stockPanel;
+    [SerializeField] GameObject endScreenCanvas;
+    [SerializeField] GameObject pauseScreenCanvas;
+
+    bool paused;
+
     [SerializeField] Sprite aboveGroundSpr;
     [SerializeField] Sprite belowGroundSpr;
     [SerializeField] Sprite[] attackAnim;
     [SerializeField] Sprite[] diveDownAnim;
     [SerializeField] Sprite[] diveUpAnim;
+
     float attackAnimIter = 0;
     float diveDownAnimIter = 0;
     float diveUpAnimIter = 0;
+    float score;
+
     ParticleSystem partSys;
     GameObject Closest;
     BoxCollider2D boxCollider;
@@ -33,6 +44,8 @@ public class charMoveHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        paused = false;
+        score = 0;
         stunTimer = 0f;
         switchState = "aboveground";
         partSys = GetComponent<ParticleSystem>();
@@ -128,7 +141,7 @@ public class charMoveHandler : MonoBehaviour
                         underground = false;
                         
                         switchState = "diveUp";
-                        Debug.Log("did a uppy");
+                        
                         Closest.GetComponent<holeStateScript>().stateIter -= 1;
 
                         if (GetDistance(Enemy1) < .3f && Enemy1.GetComponent<enemyAI>().stunned)
@@ -301,6 +314,23 @@ public class charMoveHandler : MonoBehaviour
 
         positionSet.z = -3.9f;
         transform.position = positionSet;
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            paused = !paused;
+            
+        }
+        if (paused)
+        {
+            pauseScreenCanvas.SetActive(true);
+            Time.timeScale = 0;
+        }
+        else
+        {
+            pauseScreenCanvas.SetActive(false);
+            Time.timeScale = 1;
+        }
+
     }
 
     float GetDistance(GameObject other)
@@ -316,7 +346,8 @@ public class charMoveHandler : MonoBehaviour
             if (!collision.gameObject.GetComponent<enemyAI>().stunned)
             {
                 switchState = "stunned";
-
+                Destroy(stockPanel.transform.GetChild(0).gameObject);
+                
             }
             
         }
@@ -326,19 +357,31 @@ public class charMoveHandler : MonoBehaviour
             if (!collision.gameObject.GetComponent<enemyTargetAI>().stunned)
             {
                 switchState = "stunned";
+                Destroy(stockPanel.transform.GetChild(0).gameObject);
             }
+        }
+        //Debug.Log(stockPanel.transform.childCount-1);
+        if (stockPanel.transform.childCount-1 == 0)
+        {
+            //gameover
+            Debug.Log("DONE");
+            
+            endScreenCanvas.SetActive(true);
+            Time.timeScale = .1f;
         }
 
         if ((collision.gameObject.tag == "EnemyAggro") && switchState == "attacking" && GetDistance(collision.gameObject) > .1f)
         {
             collision.gameObject.GetComponent<enemyTargetAI>().stunned = true;
-            Debug.Log("WACED");
+            score += 100;
+            ScoreDisplayObj.GetComponent<TMP_Text>().text = score.ToString();
         }
 
         if ((collision.gameObject.tag == "Enemy") && switchState == "attacking" && GetDistance(collision.gameObject) > .1f)
         {
             collision.gameObject.GetComponent<enemyAI>().stunned = true;
-            Debug.Log("WACED");
+            score += 100;
+            ScoreDisplayObj.GetComponent<TMP_Text>().text = score.ToString();
         }
     }
 }
