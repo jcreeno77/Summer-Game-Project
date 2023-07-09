@@ -99,8 +99,8 @@ public class enemyAI : MonoBehaviour
                 }
             }
         }
-        
 
+        posi.z = -4.2f;
         transform.position = posi;
         //transform.position = Vector3.Lerp(transform.position, new Vector3(xVal, yVal, -3.7f), Time.deltaTime);
 
