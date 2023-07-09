@@ -5,6 +5,7 @@ using UnityEngine;
 public class enemyAI : MonoBehaviour
 {
     [SerializeField] GameObject player;
+    Transform stunHead;
     [SerializeField] GameObject[] holeList;
     [SerializeField] Sprite[] shadowSequence;
     [SerializeField] Sprite[] smashSequence;
@@ -15,10 +16,15 @@ public class enemyAI : MonoBehaviour
     BoxCollider2D boxCollider;
 
     bool inSequence;
+    public bool stunned;
+    public float stunTimer;
     // Start is called before the first frame update
     void Start()
     {
         inSequence = false;
+        stunned = false;
+        stunHead = transform.GetChild(0);
+        stunHead.gameObject.SetActive(false);
         boxCollider = GetComponent<BoxCollider2D>();
     }
 
@@ -30,7 +36,7 @@ public class enemyAI : MonoBehaviour
         {
             boxCollider.enabled = false;
             pauseTimer += Time.deltaTime;
-            if (pauseTimer > 1f)
+            if (pauseTimer > 2.5f)
             {
                 int randRange = Random.Range(0, holeList.Length);
                 posi = holeList[randRange].transform.position;
@@ -43,34 +49,56 @@ public class enemyAI : MonoBehaviour
             }
         }
 
-        if (inSequence)
+        if (stunned)
         {
-            if (shadowIter < shadowSequence.Length - 1)
+            stunTimer += Time.deltaTime;
+            stunHead.gameObject.SetActive(true);
+            //temp
+            smashIter = 9f;
+            stunned = false;
+            stunHead.gameObject.SetActive(false);
+            if (stunTimer > 45f)
             {
-                shadowIter += Time.deltaTime * 24;
-                GetComponent<SpriteRenderer>().sprite = shadowSequence[(int)shadowIter];
+                //boxCollider.enabled = false;
+                stunHead.gameObject.SetActive(false);
+                stunned = false;
+                stunTimer = 0f;
             }
-            else
+        }
+        else
+        {
+            if (inSequence)
             {
-                if (smashIter < smashSequence.Length - 1)
+                if (shadowIter < shadowSequence.Length - 1)
                 {
-                    if (smashIter > 2f && smashIter < 9f)
-                    {
-                        boxCollider.enabled = true;
-                    }
-                    else
-                    {
-                        boxCollider.enabled = false;
-                    }
-                    smashIter += Time.deltaTime * 24;
-                    GetComponent<SpriteRenderer>().sprite = smashSequence[(int)smashIter];
+                    transform.localScale = new Vector3(3, 3, 3);
+                    shadowIter += Time.deltaTime * 15;
+                    GetComponent<SpriteRenderer>().sprite = shadowSequence[(int)shadowIter];
                 }
                 else
                 {
-                    inSequence = false;
+                    if (smashIter < smashSequence.Length - 1)
+                    {
+                        if (smashIter > 2f && smashIter < 9f)
+                        {
+                            transform.localScale = new Vector3(2.11f, 2.11f, 2.11f);
+                            boxCollider.enabled = true;
+                        }
+                        else
+                        {
+                            boxCollider.enabled = false;
+                        }
+                        smashIter += Time.deltaTime * 15;
+                        GetComponent<SpriteRenderer>().sprite = smashSequence[(int)smashIter];
+                    }
+                    else
+                    {
+                        inSequence = false;
+                    }
                 }
             }
         }
+        
 
         transform.position = posi;
         //transform.position = Vector3.Lerp(transform.position, new Vector3(xVal, yVal, -3.7f), Time.deltaTime);

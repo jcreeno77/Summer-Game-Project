@@ -18,6 +18,7 @@ public class holeStateScript : MonoBehaviour
     {
         stateIter = Mathf.Clamp(stateIter, 0, 2);
         GetComponent<SpriteRenderer>().sprite = holeStates[stateIter];
+        transform.position = new Vector3(transform.position.x, transform.position.y, -.27f);
         
 
     }
@@ -27,7 +28,7 @@ public class holeStateScript : MonoBehaviour
         if(collision.gameObject.tag == "Enemy" && !occupied)
         {
             stateIter += 1;
-            Debug.Log(collision.gameObject.name);
+            //Debug.Log(collision.gameObject.name);
         }
     }
 }

@@ -5,14 +5,24 @@ using UnityEngine;
 public class charMoveHandler : MonoBehaviour
 {
     [SerializeField] GameObject[] HoleList;
+    [SerializeField] GameObject Enemy1;
+    [SerializeField] GameObject Enemy2;
     [SerializeField] Sprite aboveGroundSpr;
     [SerializeField] Sprite belowGroundSpr;
+    [SerializeField] Sprite[] attackAnim;
+    [SerializeField] Sprite[] diveDownAnim;
+    [SerializeField] Sprite[] diveUpAnim;
+    float attackAnimIter = 0;
+    float diveDownAnimIter = 0;
+    float diveUpAnimIter = 0;
     ParticleSystem partSys;
     GameObject Closest;
+    BoxCollider2D boxCollider;
 
     Vector3 positionSet;
     Vector2 particleDirection;
 
+    Transform stunHead;
     public string switchState;
     bool underground = false;
     public bool isAbove;
@@ -26,9 +36,13 @@ public class charMoveHandler : MonoBehaviour
         partSys = GetComponent<ParticleSystem>();
         //boardWidth = HoleList.Length / 2;
         //HoleList = new GameObject[2,2];
+        positionSet = HoleList[0].transform.position;
         positionSet.z = -3.7f;
         particleDirection.x = 0;
         particleDirection.y = 0;
+        stunHead = transform.GetChild(0);
+        stunHead.gameObject.SetActive(false);
+        boxCollider = GetComponent<BoxCollider2D>();
     }
 
     // Update is called once per frame
@@ -38,6 +52,7 @@ public class charMoveHandler : MonoBehaviour
         switch (switchState)
         {
             case "underground":
+                transform.localScale = new Vector3(1, 1, 1);
                 if (Input.GetKey(KeyCode.UpArrow))
                 {
                     positionSet.y += 3 * Time.deltaTime;
@@ -69,14 +84,9 @@ public class charMoveHandler : MonoBehaviour
                     particleDirection.x = 0;
                 }
 
-                Color tmp = Color.white;
-                tmp.a = 1f;
-                GetComponent<SpriteRenderer>().color = tmp;
-
+                //going above ground
                 if (Input.GetKeyUp(KeyCode.Space))
                 {
-                    
-                    
                     //get initial
                     for (int i = 0; i < HoleList.Length; i++)
                     {
@@ -104,15 +114,26 @@ public class charMoveHandler : MonoBehaviour
                     Closest.GetComponent<holeStateScript>().occupied = true;
                     if (GetDistance(Closest) > .3f)
                     {
+                        boxCollider.enabled = true;
                         positionSet = Vector3.Lerp(positionSet, Closest.transform.position, 55f * Time.deltaTime);
                     }
                     else
                     {
                         positionSet = Closest.transform.position;
-                        GetComponent<SpriteRenderer>().sprite = aboveGroundSpr;
+                        //GetComponent<SpriteRenderer>().sprite = aboveGroundSpr;
                         underground = false;
-                        switchState = "aboveground";
+                        
+                        switchState = "diveUp";
                         Closest.GetComponent<holeStateScript>().stateIter -= 1;
+
+                        if (GetDistance(Enemy1) < .3f && Enemy1.GetComponent<enemyAI>().stunned)
+                        {
+                            Enemy1.GetComponent<enemyAI>().stunTimer = 45;
+                        }
+                        if (GetDistance(Enemy2) < .3f && Enemy2.GetComponent<enemyTargetAI>().stunned)
+                        {
+                            Enemy2.GetComponent<enemyTargetAI>().stunTimer = 45;
+                        }
                     }
                 }
                 break;
@@ -122,22 +143,110 @@ public class charMoveHandler : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
                     underground = true;
-                    switchState = "underground";
-                    GetComponent<SpriteRenderer>().sprite = belowGroundSpr;
-                    Closest.GetComponent<holeStateScript>().occupied = false;
+                    switchState = "diveDown";
+                    //GetComponent<SpriteRenderer>().sprite = belowGroundSpr;
+                    if (Closest)
+                    {
+                        Closest.GetComponent<holeStateScript>().occupied = false;
+                    }
+                    
                     Closest = null;
                 }
+
+                //if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow))
+                if(Input.GetKeyDown(KeyCode.A))
+                {
+                    attackAnimIter = 0;
+                    switchState = "attacking";
+                }
+
                 break;
 
             case "stunned":
-                GetComponent<SpriteRenderer>().color = Color.red;
+                transform.localScale = new Vector3(1f, 1f, 1f);
+                stunHead.gameObject.SetActive(true);
+                GetComponent<SpriteRenderer>().sprite = aboveGroundSpr;
                 stunTimer += Time.deltaTime;
                 if(stunTimer > 2f)
                 {
                     switchState = "aboveground";
-                    GetComponent<SpriteRenderer>().color = Color.white;
+                    stunHead.gameObject.SetActive(false);
                     stunTimer = 0;
                 }
+                break;
+
+            case "attacking":
+                if (attackAnimIter < attackAnim.Length-.5f)
+                {
+                    attackAnimIter += Time.deltaTime * 24;
+                    GetComponent<SpriteRenderer>().sprite = attackAnim[(int)attackAnimIter];
+                    transform.localScale = new Vector3(3,3,3);
+                }
+                else
+                {
+                    transform.localScale = new Vector3(1f, 1f, 1f);
+                    
+                    if (Input.GetKey(KeyCode.Space))
+                    {
+                        //GetComponent<SpriteRenderer>().sprite = belowGroundSpr;
+                        switchState = "diveDown";
+                    }
+                    else
+                    {
+                        GetComponent<SpriteRenderer>().sprite = aboveGroundSpr;
+                        switchState = "aboveground";
+                    }
+                }
+                break;
+
+            case "diveDown":
+                if (diveDownAnimIter < diveDownAnim.Length - .5f)
+                {
+                    diveDownAnimIter += Time.deltaTime * 12;
+                    GetComponent<SpriteRenderer>().sprite = diveDownAnim[(int)diveDownAnimIter];
+                    transform.localScale = new Vector3(1.3f, 1.3f, 1.3f);
+                }
+                else
+                {
+                    diveDownAnimIter = 0f;
+                    if (Input.GetKey(KeyCode.Space))
+                    {
+                        GetComponent<SpriteRenderer>().sprite = belowGroundSpr;
+                        switchState = "underground";
+                    }
+                    else
+                    {
+                        //GetComponent<SpriteRenderer>().sprite = aboveGroundSpr;
+                        switchState = "diveUp";
+                    }
+                }
+                
+                break;
+
+
+            case "diveUp":
+                if (diveUpAnimIter < diveUpAnim.Length - .5f)
+                {
+                    diveUpAnimIter += Time.deltaTime * 10;
+                    GetComponent<SpriteRenderer>().sprite = diveUpAnim[(int)diveUpAnimIter];
+                    transform.localScale = new Vector3(1, 1, 1);
+                    //Debug.Log(diveUpAnimIter);
+                }
+                else
+                {
+                    diveUpAnimIter = 0f;
+                    if (Input.GetKeyDown(KeyCode.Space))
+                    {
+                        //GetComponent<SpriteRenderer>().sprite = belowGroundSpr;
+                        switchState = "diveDown";
+                    }
+                    else
+                    {
+                        GetComponent<SpriteRenderer>().sprite = aboveGroundSpr;
+                        switchState = "aboveground";
+                    }
+                }
+                
                 break;
         }
 
@@ -160,7 +269,7 @@ public class charMoveHandler : MonoBehaviour
         }
         */
 
-        positionSet.z = -3.7f;
+        positionSet.z = -3.9f;
         transform.position = positionSet;
     }
 
@@ -169,11 +278,37 @@ public class charMoveHandler : MonoBehaviour
         return Vector2.Distance(transform.position, other.transform.position);
     }
 
-    private void OnTriggerStay2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Enemy" && switchState == "aboveground")
+        if (collision.gameObject.tag == "Enemy" && (switchState == "aboveground" || switchState == "attacking") && GetDistance(collision.gameObject) < .1f)
         {
-            switchState = "stunned";
+            Debug.Log("COLLISION");
+            if (!collision.gameObject.GetComponent<enemyAI>().stunned)
+            {
+                switchState = "stunned";
+
+            }
+            
+        }
+        else if (collision.gameObject.tag == "EnemyAggro" && (switchState == "aboveground" || switchState == "attacking") && GetDistance(collision.gameObject) < .1f)
+        {
+            Debug.Log("COLLISION");
+            if (!collision.gameObject.GetComponent<enemyTargetAI>().stunned)
+            {
+                switchState = "stunned";
+            }
+        }
+
+        if ((collision.gameObject.tag == "EnemyAggro") && switchState == "attacking" && GetDistance(collision.gameObject) > .1f)
+        {
+            collision.gameObject.GetComponent<enemyTargetAI>().stunned = true;
+            Debug.Log("WACED");
+        }
+
+        if ((collision.gameObject.tag == "Enemy") && switchState == "attacking" && GetDistance(collision.gameObject) > .1f)
+        {
+            collision.gameObject.GetComponent<enemyAI>().stunned = true;
+            Debug.Log("WACED");
         }
     }
 }
