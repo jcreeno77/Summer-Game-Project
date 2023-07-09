@@ -22,6 +22,6 @@ public class TestAddScore : MonoBehaviour
         int randomScore = random.Next(0, 10000);
 
         highScoreManager.AddHighScoreEntry(randomName, randomScore);
-        highScoreDisplay.RefreshHighScoreDisplay();
+        highScoreDisplay.UpdateHighScoreDisplay();
     }
 }
