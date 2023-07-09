@@ -7,53 +7,36 @@ public class GameOverScreen : MonoBehaviour
     public float secondsOfGameOverScreen;
     public float fadeDuration = 1.0f;
     private CanvasGroup canvasGroup;
-    public GameObject highScoreScreen;
+    public CanvasGroup secondCanvasGroup; // Assign this in the Inspector
 
     void Start()
     {
         canvasGroup = GetComponent<CanvasGroup>();
+        secondCanvasGroup.alpha = 0; // Ensure the second CanvasGroup is initially invisible
 
-        StartCoroutine(FadeIn());
+        StartCoroutine(FadeIn(canvasGroup));
     }
 
-    IEnumerator FadeIn()
+    IEnumerator FadeIn(CanvasGroup canvasGroupToFade)
     {
         float startTime = Time.time;
 
         while (Time.time < startTime + fadeDuration)
         {
-            canvasGroup.alpha = (Time.time - startTime) / fadeDuration;
+            canvasGroupToFade.alpha = (Time.time - startTime) / fadeDuration;
             yield return null;
         }
 
-        canvasGroup.alpha = 1;
+        canvasGroupToFade.alpha = 1;
 
-        Invoke("StartFadeOut", secondsOfGameOverScreen);
-    }
-
-    void StartFadeOut()
-    {
-        StartCoroutine(FadeOut());
-    }
-
-    IEnumerator FadeOut()
-    {
-        highScoreScreen.SetActive(true);
-        float startTime = Time.time;
-
-        while (Time.time < startTime + fadeDuration)
+        if (canvasGroupToFade == canvasGroup)
         {
-            canvasGroup.alpha = 1 - ((Time.time - startTime) / fadeDuration);
-            yield return null;
+            Invoke("StartFadeInSecondCanvas", secondsOfGameOverScreen);
         }
-
-        canvasGroup.alpha = 0;
-
-        DisableSelf();
     }
 
-    void DisableSelf()
+    void StartFadeInSecondCanvas()
     {
-        gameObject.SetActive(false);
+        StartCoroutine(FadeIn(secondCanvasGroup));
     }
 }
