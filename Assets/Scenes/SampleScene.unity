@@ -504,8 +504,6 @@ CanvasRenderer:
   m_CullTransparentMesh: 1
 --- !u!1 &36901212
 =======
---- !u!1 &12760918
->>>>>>> Stashed changes
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
