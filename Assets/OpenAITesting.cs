@@ -11,6 +11,8 @@ using System.Net;
 
 public class OpenAITesting : MonoBehaviour
 {
+    [SerializeField, TextArea(10, 100)] private string systemMessage; //The system message
+    [SerializeField, TextArea(10, 100)] private string prompt; //The system message
     public float movementSpeed = 5;
     // Start is called before the first frame update
     void Start()
@@ -45,13 +47,8 @@ public class OpenAITesting : MonoBehaviour
 
         var chatPrompts = new List<Message>
         {
-            new Message(Role.System,"You generate a JSON for the user. You do not add extra commentary or speech. You only give the JSON.\n" +
-            "Never respond conversationally with something like: 'Sure! Here's a JSON for a character with a random Russian name:'\n" +
-            "An example is this: \n" +
-            "User: Hey give me a JSON of a character named John. \n" +
-            "Response: {\"Name\":\"John\", \"Age\":\"30\", \"Height\": \"5.8\"}\n" +
-            "You will ONLY include Name, Age, and Height. The age range should be between 5-60"),
-            new Message(Role.User, "Hey give me a JSON for a character with a random russian name.")
+            new Message(Role.System,systemMessage),
+            new Message(Role.User, prompt)
         };
 
         var chatRequest = new ChatRequest(chatPrompts, Model.GPT3_5_Turbo);
