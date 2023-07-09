@@ -18,6 +18,11 @@ public class enemyAI : MonoBehaviour
     bool inSequence;
     public bool stunned;
     public float stunTimer;
+
+    [SerializeField] private AudioSource fallSoundEffect;
+    [SerializeField] private AudioSource hitSoundEffect;
+    [SerializeField] private AudioSource hurtSoundEffect;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,7 +31,6 @@ public class enemyAI : MonoBehaviour
         stunHead = transform.GetChild(0);
         stunHead.gameObject.SetActive(false);
         boxCollider = GetComponent<BoxCollider2D>();
-        posi = new Vector3(15, 15, 15);
     }
 
     // Update is called once per frame
@@ -72,6 +76,7 @@ public class enemyAI : MonoBehaviour
             {
                 if (shadowIter < shadowSequence.Length - 1)
                 {
+
                     transform.localScale = new Vector3(3, 3, 3);
                     shadowIter += Time.deltaTime * 15;
                     GetComponent<SpriteRenderer>().sprite = shadowSequence[(int)shadowIter];
@@ -99,8 +104,8 @@ public class enemyAI : MonoBehaviour
                 }
             }
         }
+        
 
-        posi.z = -4.2f;
         transform.position = posi;
         //transform.position = Vector3.Lerp(transform.position, new Vector3(xVal, yVal, -3.7f), Time.deltaTime);
 
