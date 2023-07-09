@@ -14,6 +14,8 @@ public class charMoveHandler : MonoBehaviour
     [SerializeField] GameObject pauseScreenCanvas;
 
     bool paused;
+    bool spinSoundPlayed;
+    bool hurtSoundPlayed;
 
     [SerializeField] Sprite aboveGroundSpr;
     [SerializeField] Sprite belowGroundSpr;
@@ -41,6 +43,12 @@ public class charMoveHandler : MonoBehaviour
     float stunTimer;
 
     [SerializeField] private AudioSource digSoundEffect;
+    [SerializeField] private AudioSource emergeSoundEffect;
+    [SerializeField] private AudioSource submergeSoundEffect;
+    [SerializeField] private AudioSource swingSoundEffect;
+    [SerializeField] private AudioSource hitSoundEffect;
+    [SerializeField] AudioClip moleHurt;
+    [SerializeField] AudioClip moleSwing;
     // Start is called before the first frame update
     void Start()
     {
@@ -58,6 +66,8 @@ public class charMoveHandler : MonoBehaviour
         stunHead = transform.GetChild(0);
         stunHead.gameObject.SetActive(false);
         boxCollider = GetComponent<BoxCollider2D>();
+        spinSoundPlayed = false;
+        hurtSoundPlayed = false;
     }
 
     // Update is called once per frame
@@ -103,6 +113,7 @@ public class charMoveHandler : MonoBehaviour
                 //going above ground
                 if (Input.GetKeyUp(KeyCode.Space))
                 {
+                    emergeSoundEffect.Play();
                     digSoundEffect.Stop();
                     //get initial
                     for (int i = 0; i < HoleList.Length; i++)
@@ -159,9 +170,10 @@ public class charMoveHandler : MonoBehaviour
 
             #region
             case "aboveground":
-
+                
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
+                    submergeSoundEffect.Play();
                     digSoundEffect.Play();
                     underground = true;
                     switchState = "diveDown";
@@ -177,8 +189,12 @@ public class charMoveHandler : MonoBehaviour
                 //if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow))
                 if(Input.GetKeyDown(KeyCode.A))
                 {
+                    
                     attackAnimIter = 0;
                     switchState = "attacking";
+
+
+
                 }
 
                 break;
@@ -186,6 +202,13 @@ public class charMoveHandler : MonoBehaviour
 
             #region
             case "stunned":
+
+                if (!hurtSoundPlayed)
+                {
+                    hitSoundEffect.PlayOneShot(moleHurt);
+                    hurtSoundPlayed = true;
+                }
+           
                 transform.localScale = new Vector3(1f, 1f, 1f);
                 stunHead.gameObject.SetActive(true);
                 GetComponent<SpriteRenderer>().sprite = aboveGroundSpr;
@@ -201,6 +224,14 @@ public class charMoveHandler : MonoBehaviour
 
             #region
             case "attacking":
+
+                if (!spinSoundPlayed)
+                {
+                
+                    hitSoundEffect.PlayOneShot(moleSwing);
+                    spinSoundPlayed = true;
+                }
+
                 if (attackAnimIter < attackAnim.Length-.5f)
                 {
                     attackAnimIter += Time.deltaTime * 24;
@@ -210,7 +241,8 @@ public class charMoveHandler : MonoBehaviour
                 else
                 {
                     transform.localScale = new Vector3(1f, 1f, 1f);
-                    
+                    hitSoundEffect.Stop();
+                    spinSoundPlayed = false;
                     if (Input.GetKey(KeyCode.Space))
                     {
                         //GetComponent<SpriteRenderer>().sprite = belowGroundSpr;
