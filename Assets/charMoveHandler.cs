@@ -51,6 +51,7 @@ public class charMoveHandler : MonoBehaviour
 
         switch (switchState)
         {
+            #region
             case "underground":
                 transform.localScale = new Vector3(1, 1, 1);
                 if (Input.GetKey(KeyCode.UpArrow))
@@ -124,6 +125,7 @@ public class charMoveHandler : MonoBehaviour
                         underground = false;
                         
                         switchState = "diveUp";
+                        Debug.Log("did a uppy");
                         Closest.GetComponent<holeStateScript>().stateIter -= 1;
 
                         if (GetDistance(Enemy1) < .3f && Enemy1.GetComponent<enemyAI>().stunned)
@@ -137,7 +139,9 @@ public class charMoveHandler : MonoBehaviour
                     }
                 }
                 break;
+            #endregion
 
+            #region
             case "aboveground":
 
                 if (Input.GetKeyDown(KeyCode.Space))
@@ -161,7 +165,9 @@ public class charMoveHandler : MonoBehaviour
                 }
 
                 break;
+            #endregion
 
+            #region
             case "stunned":
                 transform.localScale = new Vector3(1f, 1f, 1f);
                 stunHead.gameObject.SetActive(true);
@@ -174,7 +180,9 @@ public class charMoveHandler : MonoBehaviour
                     stunTimer = 0;
                 }
                 break;
+            #endregion
 
+            #region
             case "attacking":
                 if (attackAnimIter < attackAnim.Length-.5f)
                 {
@@ -199,10 +207,13 @@ public class charMoveHandler : MonoBehaviour
                 }
                 break;
 
+            #endregion
+
+            #region
             case "diveDown":
                 if (diveDownAnimIter < diveDownAnim.Length - .5f)
                 {
-                    diveDownAnimIter += Time.deltaTime * 12;
+                    diveDownAnimIter += Time.deltaTime * 24;
                     GetComponent<SpriteRenderer>().sprite = diveDownAnim[(int)diveDownAnimIter];
                     transform.localScale = new Vector3(1.3f, 1.3f, 1.3f);
                 }
@@ -213,21 +224,30 @@ public class charMoveHandler : MonoBehaviour
                     {
                         GetComponent<SpriteRenderer>().sprite = belowGroundSpr;
                         switchState = "underground";
+                        if (Closest)
+                        {
+                            Closest.GetComponent<holeStateScript>().occupied = false;
+                        }
+                        
+                        Closest = null; 
                     }
                     else
                     {
                         //GetComponent<SpriteRenderer>().sprite = aboveGroundSpr;
                         switchState = "diveUp";
+                        //switchState = "underground";
                     }
                 }
                 
                 break;
+            #endregion
 
-
+            #region
             case "diveUp":
+                //If doing rising action
                 if (diveUpAnimIter < diveUpAnim.Length - .5f)
                 {
-                    diveUpAnimIter += Time.deltaTime * 10;
+                    diveUpAnimIter += Time.deltaTime * 24;
                     GetComponent<SpriteRenderer>().sprite = diveUpAnim[(int)diveUpAnimIter];
                     transform.localScale = new Vector3(1, 1, 1);
                     //Debug.Log(diveUpAnimIter);
@@ -235,10 +255,15 @@ public class charMoveHandler : MonoBehaviour
                 else
                 {
                     diveUpAnimIter = 0f;
-                    if (Input.GetKeyDown(KeyCode.Space))
+                    if (Input.GetKey(KeyCode.Space))
                     {
                         //GetComponent<SpriteRenderer>().sprite = belowGroundSpr;
                         switchState = "diveDown";
+                        if (Closest)
+                        {
+                            Closest.GetComponent<holeStateScript>().occupied = false;
+                        }
+                        Closest = null;
                     }
                     else
                     {
@@ -248,6 +273,7 @@ public class charMoveHandler : MonoBehaviour
                 }
                 
                 break;
+                #endregion
         }
 
         if(GetComponent<SpriteRenderer>().sprite == aboveGroundSpr)

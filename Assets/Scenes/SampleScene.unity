@@ -152,6 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82e84e1f7f6907343aab022f2bd6b041, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  systemMessage: 
+  prompt: 
   movementSpeed: 5
 --- !u!4 &12760920
 Transform:
