@@ -103,7 +103,7 @@ public class charMoveHandler : MonoBehaviour
                 //going above ground
                 if (Input.GetKeyUp(KeyCode.Space))
                 {
-                    digSoundEffect.Stop();
+                    //digSoundEffect.Stop();
                     //get initial
                     for (int i = 0; i < HoleList.Length; i++)
                     {
@@ -162,7 +162,7 @@ public class charMoveHandler : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
-                    digSoundEffect.Play();
+                    //digSoundEffect.Play();
                     underground = true;
                     switchState = "diveDown";
                     //GetComponent<SpriteRenderer>().sprite = belowGroundSpr;
