@@ -142,7 +142,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!82 &12060530
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1296,25 +1296,29 @@ MonoBehaviour:
   aboveGroundSpr: {fileID: 21300000, guid: 7228351a349c94744b8677f9de6349c2, type: 3}
   belowGroundSpr: {fileID: 21300000, guid: f0845a21d5670424da31b242b955fa05, type: 3}
   attackAnim:
-  - {fileID: 21300000, guid: d15c6b12b500ecb4bbd76a932d9b3363, type: 3}
-  - {fileID: 21300000, guid: ca1c2925b428d494ab4610699c34c7b4, type: 3}
-  - {fileID: 21300000, guid: c609528433a78a847bf37033d95309d2, type: 3}
-  - {fileID: 21300000, guid: 8996dc36f9a4485478ab8f4622a82696, type: 3}
-  - {fileID: 21300000, guid: 0ecdce2870428044388cdf7ac73c08e7, type: 3}
-  - {fileID: 21300000, guid: b4f3b62493ba18043abce9224ace602a, type: 3}
-  - {fileID: 21300000, guid: 4967daadac01384449cde04356c83672, type: 3}
-  - {fileID: 21300000, guid: c423997caf6621049b35c0107f0cd5d7, type: 3}
-  - {fileID: 21300000, guid: 267ea88e95121f1469569cfaae130c07, type: 3}
-  - {fileID: 21300000, guid: b5ea301be24970d4a91507077b17568c, type: 3}
-  - {fileID: 21300000, guid: c356647ff6fae354bb9c4801ea83d637, type: 3}
-  - {fileID: 21300000, guid: 5d9583a98bb68cf428ce5e65652a6301, type: 3}
-  - {fileID: 21300000, guid: ff3ca50937ebbdd45b852c60a7c631e8, type: 3}
-  - {fileID: 21300000, guid: 3969c26b6daaeb844910be1a831e8380, type: 3}
-  - {fileID: 21300000, guid: 1f3dbb851d8d99147903382c63be67f8, type: 3}
-  - {fileID: 21300000, guid: 4fce237bed16494408a1b47a9cdafb0e, type: 3}
-  - {fileID: 21300000, guid: 750d28bbedc05d04e934df902e9eb101, type: 3}
-  - {fileID: 21300000, guid: 7d017ddf8345f4f4e862e9d879d8ad43, type: 3}
-  - {fileID: 21300000, guid: eef2017d40ab4184bbfd9033f349a946, type: 3}
+  - {fileID: 21300000, guid: e158e8be9f7fc324f8f6e574433383f1, type: 3}
+  - {fileID: 21300000, guid: e14e0ce47eb1d6141bf7b158abc62370, type: 3}
+  - {fileID: 21300000, guid: 6b4a7b48b6e126f418b5406b6682fb25, type: 3}
+  - {fileID: 21300000, guid: 965cbb29c1fa35a4dad76204c97a6dba, type: 3}
+  - {fileID: 21300000, guid: f668b04466e39d44a85603aebf046a60, type: 3}
+  - {fileID: 21300000, guid: a893a0992d889ff4e81cdaca246540fe, type: 3}
+  - {fileID: 21300000, guid: e9b63164d329f1943838b1de8c8275be, type: 3}
+  - {fileID: 21300000, guid: c01d956f223706b409cd9e75b4bc17d5, type: 3}
+  - {fileID: 21300000, guid: 2b45893850c4a294595c33e1333341b3, type: 3}
+  - {fileID: 21300000, guid: 2fd7a5e96600f5d42a62037a85373cc5, type: 3}
+  - {fileID: 21300000, guid: cd07eac78f265d148b70147675a56e1b, type: 3}
+  - {fileID: 21300000, guid: b08ac65c515999f488d5f2f440c94e94, type: 3}
+  - {fileID: 21300000, guid: 190282c527617474fbda42036fdef99d, type: 3}
+  - {fileID: 21300000, guid: 49261c75fa123fc40a93b2b3eab2b493, type: 3}
+  - {fileID: 21300000, guid: 31c9fc25a8a85174988c5a78e5a5d638, type: 3}
+  - {fileID: 21300000, guid: 708d4e3abe2f38740b29ddb5d14a16f9, type: 3}
+  - {fileID: 21300000, guid: 8753dfde54c0de74fbe2d0c1842efb3b, type: 3}
+  - {fileID: 21300000, guid: 4374ebc81f93bd84d88e48eeb30b36f0, type: 3}
+  - {fileID: 21300000, guid: 4d2c7dbff27c2d944bd33cbb858cac2f, type: 3}
+  - {fileID: 21300000, guid: 27cfb3c1a1d5c7c49951fb45577bca11, type: 3}
+  - {fileID: 21300000, guid: 5d0b7eee0caae1a41bd61e6cd7508230, type: 3}
+  - {fileID: 21300000, guid: 7e75f4787e35e7c4bb87271ff135cd33, type: 3}
+  - {fileID: 21300000, guid: 9808f2cdc21752b4b8e33ea9758924f6, type: 3}
   diveDownAnim:
   - {fileID: 21300000, guid: 5a7f29142d02da042bfef9bc23ddd902, type: 3}
   - {fileID: 21300000, guid: d86280828d8c16646ab0326981b75d55, type: 3}
@@ -1330,6 +1334,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 2a5987508b4587c4fb493cc4b983f55b, type: 3}
   switchState: 
   isAbove: 0
+  digSoundEffect: {fileID: 0}
 --- !u!212 &277159278
 SpriteRenderer:
   m_ObjectHideFlags: 0

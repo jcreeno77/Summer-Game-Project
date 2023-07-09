@@ -103,7 +103,7 @@ public class charMoveHandler : MonoBehaviour
                 //going above ground
                 if (Input.GetKeyUp(KeyCode.Space))
                 {
-                    digSoundEffect.Stop();
+                    //digSoundEffect.Stop();
                     //get initial
                     for (int i = 0; i < HoleList.Length; i++)
                     {
@@ -162,7 +162,7 @@ public class charMoveHandler : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
-                    digSoundEffect.Play();
+                    //digSoundEffect.Play();
                     underground = true;
                     switchState = "diveDown";
                     //GetComponent<SpriteRenderer>().sprite = belowGroundSpr;
@@ -205,7 +205,7 @@ public class charMoveHandler : MonoBehaviour
                 {
                     attackAnimIter += Time.deltaTime * 24;
                     GetComponent<SpriteRenderer>().sprite = attackAnim[(int)attackAnimIter];
-                    transform.localScale = new Vector3(3,3,3);
+                    transform.localScale = new Vector3(2,2,2);
                 }
                 else
                 {
