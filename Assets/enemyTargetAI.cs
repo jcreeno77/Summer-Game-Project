@@ -52,18 +52,19 @@ public class enemyTargetAI : MonoBehaviour
 
         if (stunned)
         {
+            boxCollider.enabled = false;
             stunTimer += Time.deltaTime;
-            stunHead.gameObject.SetActive(true);
             //temp
             smashIter = 9f;
-            stunned = false;
-            stunHead.gameObject.SetActive(false);
-            if (stunTimer > 45f)
+            Vector2 directiony = player.transform.position - transform.position;
+            posi = (Vector2)posi - directiony.normalized*5f*Time.deltaTime;
+            transform.rotation = Quaternion.Euler(new Vector3(0f,0f, Time.time*1000f));
+            if (stunTimer > 4f)
             {
                 //boxCollider.enabled = false;
-                stunHead.gameObject.SetActive(false);
                 stunned = false;
                 stunTimer = 0f;
+                transform.rotation = Quaternion.Euler(new Vector3(0f,0f, 0f));
             }
         }
         else
@@ -80,7 +81,7 @@ public class enemyTargetAI : MonoBehaviour
                 {
                     if (smashIter < smashSequence.Length - 1)
                     {
-                        if (smashIter > 2f && smashIter < 9f)
+                        if (smashIter > 2f && smashIter < 15f)
                         {
                             transform.localScale = new Vector3(2.11f, 2.11f, 2.11f);
                             boxCollider.enabled = true;
@@ -100,7 +101,7 @@ public class enemyTargetAI : MonoBehaviour
             }
         }
         
-
+        posi.z = -4;
         transform.position = posi;
     }
 }

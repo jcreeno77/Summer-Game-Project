@@ -12,6 +12,7 @@ public class charMoveHandler : MonoBehaviour
     [SerializeField] GameObject stockPanel;
     [SerializeField] GameObject endScreenCanvas;
     [SerializeField] GameObject pauseScreenCanvas;
+    [SerializeField] GameObject getReadyCanvas;
 
     bool paused;
     bool spinSoundPlayed;
@@ -50,6 +51,7 @@ public class charMoveHandler : MonoBehaviour
     [SerializeField] private AudioSource hitSoundEffect;
     [SerializeField] AudioClip moleHurt;
     [SerializeField] AudioClip moleSwing;
+    [SerializeField] AudioClip hitHammer;
     // Start is called before the first frame update
     void Start()
     {
@@ -220,6 +222,7 @@ public class charMoveHandler : MonoBehaviour
                     switchState = "aboveground";
                     stunHead.gameObject.SetActive(false);
                     stunTimer = 0;
+                    hurtSoundPlayed = false;
                 }
                 break;
             #endregion
@@ -236,9 +239,9 @@ public class charMoveHandler : MonoBehaviour
 
                 if (attackAnimIter < attackAnim.Length-.5f)
                 {
-                    attackAnimIter += Time.deltaTime * 24;
-                    GetComponent<SpriteRenderer>().sprite = attackAnim[(int)attackAnimIter];
-                    transform.localScale = new Vector3(2,2,2);
+                    attackAnimIter += Time.deltaTime * 30;
+                    GetComponent<SpriteRenderer>().sprite = attackAnim[(int)(attackAnimIter-.5f)];
+                    transform.localScale = new Vector3(2.5f,2.5f,2.5f);
                 }
                 else
                 {
@@ -272,7 +275,7 @@ public class charMoveHandler : MonoBehaviour
                 if (diveDownAnimIter < diveDownAnim.Length - .5f)
                 {
                     diveDownAnimIter += Time.deltaTime * 24;
-                    GetComponent<SpriteRenderer>().sprite = diveDownAnim[(int)diveDownAnimIter];
+                    GetComponent<SpriteRenderer>().sprite = diveDownAnim[(int)(diveDownAnimIter-.5f)];
                     transform.localScale = new Vector3(1.3f, 1.3f, 1.3f);
                 }
                 else
@@ -307,7 +310,7 @@ public class charMoveHandler : MonoBehaviour
                 if (diveUpAnimIter < diveUpAnim.Length - .5f)
                 {
                     diveUpAnimIter += Time.deltaTime * 24;
-                    GetComponent<SpriteRenderer>().sprite = diveUpAnim[(int)diveUpAnimIter];
+                    GetComponent<SpriteRenderer>().sprite = diveUpAnim[(int)(diveUpAnimIter-.5f)];
                     transform.localScale = new Vector3(1, 1, 1);
                     //Debug.Log(diveUpAnimIter);
                 }
@@ -384,7 +387,7 @@ public class charMoveHandler : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Enemy" && (switchState == "aboveground" || switchState == "attacking") && GetDistance(collision.gameObject) < .1f)
+        if (collision.gameObject.tag == "Enemy" && (switchState == "aboveground" || switchState == "attacking") && GetDistance(collision.gameObject) < .05f)
         {
             Debug.Log("COLLISION");
             if (!collision.gameObject.GetComponent<enemyAI>().stunned)
@@ -395,7 +398,7 @@ public class charMoveHandler : MonoBehaviour
             }
             
         }
-        else if (collision.gameObject.tag == "EnemyAggro" && (switchState == "aboveground" || switchState == "attacking") && GetDistance(collision.gameObject) < .1f)
+        else if (collision.gameObject.tag == "EnemyAggro" && (switchState == "aboveground" || switchState == "attacking") && GetDistance(collision.gameObject) < .05f)
         {
             Debug.Log("COLLISION");
             if (!collision.gameObject.GetComponent<enemyTargetAI>().stunned)
@@ -408,24 +411,28 @@ public class charMoveHandler : MonoBehaviour
         if (stockPanel.transform.childCount-1 == 0)
         {
             //gameover
-            Debug.Log("DONE");
-            
+            Enemy1.SetActive(false);
+            Enemy2.SetActive(false);
             endScreenCanvas.SetActive(true);
-            Time.timeScale = .1f;
+            getReadyCanvas.SetActive(false);
+            //gameObject.SetActive(false);
+            //Time.timeScale = 0f;
         }
 
-        if ((collision.gameObject.tag == "EnemyAggro") && switchState == "attacking" && GetDistance(collision.gameObject) > .1f)
+        if ((collision.gameObject.tag == "EnemyAggro") && switchState == "attacking" && GetDistance(collision.gameObject) > .05f)
         {
             collision.gameObject.GetComponent<enemyTargetAI>().stunned = true;
             score += 100;
             ScoreDisplayObj.GetComponent<TMP_Text>().text = score.ToString();
+            emergeSoundEffect.PlayOneShot(hitHammer);
         }
 
-        if ((collision.gameObject.tag == "Enemy") && switchState == "attacking" && GetDistance(collision.gameObject) > .1f)
+        if ((collision.gameObject.tag == "Enemy") && switchState == "attacking" && GetDistance(collision.gameObject) > .05f)
         {
             collision.gameObject.GetComponent<enemyAI>().stunned = true;
             score += 100;
             ScoreDisplayObj.GetComponent<TMP_Text>().text = score.ToString();
+            emergeSoundEffect.PlayOneShot(hitHammer);
         }
     }
 }
