@@ -28,6 +28,8 @@ public class charMoveHandler : MonoBehaviour
     public bool isAbove;
 
     float stunTimer;
+
+    [SerializeField] private AudioSource digSoundEffect;
     // Start is called before the first frame update
     void Start()
     {
@@ -88,6 +90,7 @@ public class charMoveHandler : MonoBehaviour
                 //going above ground
                 if (Input.GetKeyUp(KeyCode.Space))
                 {
+                    digSoundEffect.Stop();
                     //get initial
                     for (int i = 0; i < HoleList.Length; i++)
                     {
@@ -146,6 +149,7 @@ public class charMoveHandler : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
+                    digSoundEffect.Play();
                     underground = true;
                     switchState = "diveDown";
                     //GetComponent<SpriteRenderer>().sprite = belowGroundSpr;
