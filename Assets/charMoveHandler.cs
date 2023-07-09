@@ -236,7 +236,7 @@ public class charMoveHandler : MonoBehaviour
                 {
                     attackAnimIter += Time.deltaTime * 24;
                     GetComponent<SpriteRenderer>().sprite = attackAnim[(int)attackAnimIter];
-                    transform.localScale = new Vector3(3,3,3);
+                    transform.localScale = new Vector3(2,2,2);
                 }
                 else
                 {

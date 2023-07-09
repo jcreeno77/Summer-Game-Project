@@ -27,6 +27,7 @@ public class enemyTargetAI : MonoBehaviour
         stunHead = transform.GetChild(0);
         stunHead.gameObject.SetActive(false);
         boxCollider = GetComponent<BoxCollider2D>();
+        posi = new Vector3(15, 15, 15);
     }
 
     // Update is called once per frame

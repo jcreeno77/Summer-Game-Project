@@ -26,6 +26,7 @@ public class enemyAI : MonoBehaviour
         stunHead = transform.GetChild(0);
         stunHead.gameObject.SetActive(false);
         boxCollider = GetComponent<BoxCollider2D>();
+        posi = new Vector3(15, 15, 15);
     }
 
     // Update is called once per frame
@@ -98,8 +99,8 @@ public class enemyAI : MonoBehaviour
                 }
             }
         }
-        
 
+        posi.z = -4.2f;
         transform.position = posi;
         //transform.position = Vector3.Lerp(transform.position, new Vector3(xVal, yVal, -3.7f), Time.deltaTime);
 
