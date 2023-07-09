@@ -39,6 +39,7 @@ public class charMoveHandler : MonoBehaviour
     public string switchState;
     bool underground = false;
     public bool isAbove;
+    bool diveDownPlayed;
 
     float stunTimer;
 
@@ -68,6 +69,7 @@ public class charMoveHandler : MonoBehaviour
         boxCollider = GetComponent<BoxCollider2D>();
         spinSoundPlayed = false;
         hurtSoundPlayed = false;
+        diveDownPlayed = false;
     }
 
     // Update is called once per frame
@@ -173,8 +175,8 @@ public class charMoveHandler : MonoBehaviour
                 
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
-                    submergeSoundEffect.Play();
-                    digSoundEffect.Play();
+                    //submergeSoundEffect.Play();
+                    //digSoundEffect.Play();
                     underground = true;
                     switchState = "diveDown";
                     //GetComponent<SpriteRenderer>().sprite = belowGroundSpr;
@@ -260,6 +262,13 @@ public class charMoveHandler : MonoBehaviour
 
             #region
             case "diveDown":
+                if(!diveDownPlayed)
+                {
+                    submergeSoundEffect.Play();
+                    digSoundEffect.Play();
+                    diveDownPlayed = true;
+                }
+                
                 if (diveDownAnimIter < diveDownAnim.Length - .5f)
                 {
                     diveDownAnimIter += Time.deltaTime * 24;
@@ -269,6 +278,7 @@ public class charMoveHandler : MonoBehaviour
                 else
                 {
                     diveDownAnimIter = 0f;
+                    diveDownPlayed = false;
                     if (Input.GetKey(KeyCode.Space))
                     {
                         GetComponent<SpriteRenderer>().sprite = belowGroundSpr;
@@ -345,6 +355,8 @@ public class charMoveHandler : MonoBehaviour
         */
 
         positionSet.z = -3.9f;
+        positionSet.x = Mathf.Clamp(positionSet.x,-4.5f,3.7f);
+        positionSet.y = Mathf.Clamp(positionSet.y,0.5f,4.6f);
         transform.position = positionSet;
 
         if (Input.GetKeyDown(KeyCode.Escape))
